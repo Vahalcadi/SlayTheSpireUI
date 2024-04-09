@@ -21,6 +21,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI deckSize;
     [SerializeField] private TextMeshProUGUI discardSize;
 
+    private System.Random random = new System.Random();
+
     void Start()
     {
 
@@ -38,6 +40,11 @@ public class GameManager : MonoBehaviour
 
     // Update is called once per frame
     void Update()
+    {
+        UseCard();
+    }
+
+    private void UseCard()
     {
         if (Input.GetKeyDown(KeyCode.G) && cardsInHand.Count > 0 && currentMana - cardsInHand.Peek().GetComponent<Card>().manaCost >= 0)
         {
@@ -77,6 +84,8 @@ public class GameManager : MonoBehaviour
         {
             int discardCount = discard.Count;
 
+            FisherYatesShuffle(ref cards);
+
             for (int i = 0; i < discardCount; i++)
             {
                 deck.Enqueue(cards[i]);
@@ -93,5 +102,19 @@ public class GameManager : MonoBehaviour
     {
         yield return new WaitForSeconds(1);
         GenerateTurn();
+    }
+
+    private void FisherYatesShuffle(ref List<GameObject> List)
+    {
+        int n = List.Count;
+        while (n > 1)
+        {
+            n--;
+            int k = random.Next(n + 1);
+
+            var value = List[k];
+            List[k] = List[n];
+            List[n] = value;
+        }
     }
 }
